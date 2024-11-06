@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
     use Notifiable;
 
@@ -45,5 +47,36 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
         ];
+    }
+
+    /**
+     * @return HasMany<Vote, User>
+     */
+    public function votes(): HasMany
+    {
+        /** @var HasMany<Vote, User> */
+        return $this->hasMany(Vote::class);
+    }
+
+    public function like(Question $question): Void
+    {
+        $this->votes()->updateOrCreate(
+            ['question_id' => $question->id],
+            [
+                'like'   => 1,
+                'unlike' => 0,
+            ]
+        );
+    }
+
+    public function unlike(Question $question): Void
+    {
+        $this->votes()->updateOrCreate(
+            ['question_id' => $question->id],
+            [
+                'like'   => 0,
+                'unlike' => 1,
+            ]
+        );
     }
 }
