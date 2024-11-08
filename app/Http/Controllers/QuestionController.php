@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Question;
+
 use function App\Support\user;
 
 use Closure;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\{RedirectResponse};
 use Illuminate\View\View;
 
 class QuestionController extends Controller
 {
+    use AuthorizesRequests;
     public function index(): View
     {
         return view('question.index', [
@@ -37,6 +41,14 @@ class QuestionController extends Controller
                 'question' => request()->question,
                 'draft'    => true,
             ]);
+
+        return back();
+    }
+
+    public function destroy(Question $question): RedirectResponse
+    {
+        $this->authorize('destroy', $question);
+        $question->delete();
 
         return back();
     }
