@@ -15,6 +15,7 @@ use Illuminate\View\View;
 class QuestionController extends Controller
 {
     use AuthorizesRequests;
+
     public function index(): View
     {
         return view('question.index', [
@@ -43,6 +44,11 @@ class QuestionController extends Controller
             ]);
 
         return back();
+    }
+
+    public function edit(Question $question): void
+    {
+
     }
 
     public function destroy(Question $question): RedirectResponse
