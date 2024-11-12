@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 
+use App\Rules\SameQuestionRule;
+
 use function App\Support\user;
 
 use Closure;
@@ -35,6 +37,7 @@ class QuestionController extends Controller
                         $fail("Are you shure that is a question? It is missing the question mark in the end.");
                     }
                 },
+                new SameQuestionRule(),
             ],
         ]);
 
